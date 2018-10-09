@@ -7,9 +7,7 @@ function Book(title, author, isbn) {
 
 // UI Constructor
 
-function UI() {
-
-}
+function UI() {}
 
 // ADD BOOK TO LIST method
 UI.prototype.addBookToList = function(book) {
@@ -35,6 +33,32 @@ UI.prototype.clearFields = function() {
    isbn.value = ''
 }
 
+// SHOW ERROR method
+UI.prototype.showAlert = function(msg, className) {
+   // CREATE A DIV
+   const div = document.createElement('div')
+
+   // ADD CLASS TO DIV
+   div.className = `alert ${className}`
+
+   // ADD TEXT TO DIV
+   div.appendChild(document.createTextNode(msg))
+
+   //GET PARENT ELEMENT TO INSERT MESSAGE
+   const container = document.querySelector('.container')
+
+   // GET ELEMENT THAT WE WANT TO INSERT THE MESSAGE BEFORE
+   const form = document.getElementById('book-form')
+
+   // INSERT BEFORE TAKES IN 2 ARGUMENTS(INSERT WHAT, BEFORE WHAT)
+   container.insertBefore(div, form)
+   
+   // TIMEOUT after 3 seconds
+   setTimeout(function() {
+      document.querySelector('.alert').remove()
+   }, 3 * 1000)
+}
+
 // EVENT LISTENERS
 document.getElementById('book-form').addEventListener('submit', (e)=> {
    // Get from values
@@ -48,11 +72,23 @@ document.getElementById('book-form').addEventListener('submit', (e)=> {
    // INSTANTIATE UI
    const ui = new UI()
 
-   // ADD A BOOK TO THE LIST 
-   ui.addBookToList(book)
+   // VALIDATE 
+   if(title === '' || author === '' || isbn === '') {
+      // ERROR ALERT 
+      ui.showAlert('Please fill in all fields', 'error')
+   }
+   else {
+      // ADD A BOOK TO THE LIST 
+      ui.addBookToList(book)
 
-   // CLEAR THE FIELDS after submit 
-   ui.clearFields()
+      // CLEAR THE FIELDS after submit 
+      ui.clearFields()
+
+      // SHOW ALERT for added book
+      ui.showAlert('Book Added!', 'success')
+   }
+
+ 
 
    e.preventDefault()
 })
